@@ -9,13 +9,15 @@
 </template>
 
 <script lang="ts" setup>
+import type { PropType } from "vue";
+
 defineProps({
   text: {
-    type: String,
+    type: String as PropType<string>,
     required: true,
   },
   value: {
-    type: String,
+    type: Number as PropType<number>,
     required: true,
   },
 });

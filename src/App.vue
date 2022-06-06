@@ -3,7 +3,7 @@
     <main class="max-w-sm mx-auto border-2">
       <TopHead />
       <section class="bg-gray-100 min-h-[600px]">
-        <DefaultItem text="unattributed value remaining" value="5.8" />
+        <DefaultItem :text="defaultItem.text" :value="defaultItem.value" />
         <hr class="my-1" />
         <div class="p-3">
           <FieldItem
@@ -17,9 +17,9 @@
             :show-icon="items.length > 6"
           />
           <ButtonBase
-            class="bg-white text-gray-500 w-full"
+            class="bg-white text-gray-500 w-full disabled:text-gray-300"
             @click="handleNewField"
-            :disabled="!!isOverrallError"
+            :disabled="!!isMissingReq"
           >
             <template #icon
               ><PlusIcon class="w-4 h-4 font-semibold"
@@ -67,11 +67,17 @@ const items = ref<FieldType[]>([
   { text: "Position 6", value: "", error: "", disabled: true },
 ]);
 
-const isOverrallError = computed(() => {
-  return items.value.some((item) => item.error);
+const defaultItem = ref({ text: "unattributed value remaining", value: 5.8 });
+
+const isMissingReq = computed(() => {
+  return items.value.some((item) => item.error || item.value === "");
 });
+
 const isOverrallSummed = computed(() => {
-  return items.value.reduce((acc, cur) => acc + Number(cur.value), 0);
+  return items.value.reduce(
+    (acc, cur) => acc + Number(cur.value),
+    defaultItem.value.value
+  );
 });
 
 const handleNewField = () => {

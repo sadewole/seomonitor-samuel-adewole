@@ -6,8 +6,8 @@
         { 'border border-red-500': !!error },
         { 'pointer-events-none bg-gray-50': disabled },
       ]"
-      @mouseenter="hovered = true"
-      @mouseleave="hovered = false"
+      @mouseenter="boxHovered = true"
+      @mouseleave="boxHovered = false"
     >
       <input
         type="text"
@@ -17,19 +17,33 @@
         @input="$emit('update:text', $event.target.value)"
         class="uppercase flex-1 focus:outline-none focus:border-0"
       />
-      <input
-        type="text"
-        name="value"
-        :value="value"
-        @focus="formatValueOnFocus"
-        @blur="formatValueOnBlur"
-        @input="$emit('update:value', $event.target.value)"
-        class="px-2 bg-gray-100 w-12 rounded-full text-center"
-      />
+      <!-- Input value with tooltip -->
+      <div class="relative">
+        <input
+          type="text"
+          name="value"
+          :value="value"
+          @focus="formatValueOnFocus"
+          @blur="formatValueOnBlur"
+          @mouseenter="valueHovered = true"
+          @mouseleave="valueHovered = false"
+          @input="$emit('update:value', $event.target.value)"
+          class="px-2 bg-gray-100 w-12 rounded-full text-center"
+        />
+        <div
+          v-if="value"
+          :class="[
+            'inline-block absolute right-0 top-5 z-10 text-xs px-3 font-medium text-gray-500 bg-white rounded-lg border border-gray-200 shadow-sm',
+            { 'opacity-0 invisible': !valueHovered },
+          ]"
+        >
+          {{ value }}
+        </div>
+      </div>
       <span>%</span>
       <span
         class="rounded-full bg-red-50 p-2 cursor-pointer"
-        v-if="hovered && showIcon"
+        v-if="boxHovered && showIcon"
         @click="handleDelete"
       >
         <TrashIcon class="w-3 h-3 text-red-500" />
@@ -44,12 +58,29 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { computed } from "vue";
 import type { PropType } from "vue";
 import TrashIcon from "./icons/TrashIcon.vue";
 import WarningIcon from "./icons/WarningIcon.vue";
+import { formattedValue } from "../utils/parseFormat";
 
-const hovered = ref(false);
+// Used `computed` to avoid re-rendering the component when the value changes.
+const boxHovered = computed({
+  get() {
+    return false;
+  },
+  set(value) {
+    return value;
+  },
+});
+const valueHovered = computed({
+  get() {
+    return false;
+  },
+  set(value) {
+    return value;
+  },
+});
 
 defineEmits(["update:text", "update:value"]);
 
@@ -80,12 +111,12 @@ const props = defineProps({
   },
 });
 
-const formatValueOnFocus = (payload: FocusEvent) => {
+const formatValueOnFocus = (payload: FocusEvent): void => {
   const target = payload.target as HTMLInputElement;
   target.value = props.value;
 };
 
-const formatValueOnBlur = (payload: FocusEvent) => {
+const formatValueOnBlur = (payload: FocusEvent): void => {
   const target = payload.target as HTMLInputElement;
   let value = target.value;
   const num = parseFloat(value);
@@ -99,19 +130,4 @@ const formatValueOnBlur = (payload: FocusEvent) => {
 
   target.value = String(newVal);
 };
-
-function formattedValue(str: string | number, val: number) {
-  return isFloat(str) ? parseFixed(str, val) : str;
-}
-
-function parseFixed(str: string | number, val: number) {
-  str = str.toString();
-  str = str.slice(0, str.indexOf(".") + val + 1);
-  return Number(str);
-}
-
-// check if number is a floating point number
-function isFloat(num: number | string) {
-  return Number(num) % 1 !== 0;
-}
 </script>
