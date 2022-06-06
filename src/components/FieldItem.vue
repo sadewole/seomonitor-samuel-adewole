@@ -49,6 +49,7 @@
         <TrashIcon class="w-3 h-3 text-red-500" />
       </span>
     </div>
+    <!-- warning message -->
     <span class="text-red-500 text-sm" v-if="!!error"
       ><WarningIcon class="w-3 h-3 inline-flex items-center mr-1" />{{
         error

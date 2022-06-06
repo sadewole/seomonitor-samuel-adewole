@@ -2,7 +2,7 @@
 
 Vue 3 + Vite + TypeScript + Tailwind
 
-## Checks
+## Requirements
 
 - [x] You must have a minimum number of 6 fields. Except for the first field, the inputs should be disabled.
 - [x] You can only fill the inputs from top to bottom. After filling the first input, the second field should be enabled, and so on…
