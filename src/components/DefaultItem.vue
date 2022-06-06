@@ -3,7 +3,7 @@
     <span class="uppercase flex-1 focus:outline-none focus:border-0">{{
       text
     }}</span>
-    <p class="px-2 bg-gray-100 w-12 rounded-full text-center">{{ value }}</p>
+    <p class="px-2 bg-white w-12 rounded-full text-center">{{ value }}</p>
     <span>%</span>
   </div>
 </template>
