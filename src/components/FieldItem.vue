@@ -13,7 +13,7 @@
         type="text"
         name="text"
         placeholder="Enter text"
-        :value="text"
+        :value="props.text"
         @input="$emit('update:text', $event.target.value)"
         class="uppercase flex-1 focus:outline-none focus:border-0"
       />
@@ -22,7 +22,7 @@
         <input
           type="text"
           name="value"
-          :value="value"
+          :value="redefineValue"
           @focus="formatValueOnFocus"
           @blur="formatValueOnBlur"
           @mouseenter="valueHovered = true"
@@ -58,29 +58,11 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from "vue";
+import { ref, watch } from "vue";
 import type { PropType } from "vue";
 import TrashIcon from "./icons/TrashIcon.vue";
 import WarningIcon from "./icons/WarningIcon.vue";
 import { formattedValue } from "../utils/parseFormat";
-
-// Used `computed` to avoid re-rendering the component when the value changes.
-const boxHovered = computed({
-  get() {
-    return false;
-  },
-  set(value) {
-    return value;
-  },
-});
-const valueHovered = computed({
-  get() {
-    return false;
-  },
-  set(value) {
-    return value;
-  },
-});
 
 defineEmits(["update:text", "update:value"]);
 
@@ -111,9 +93,19 @@ const props = defineProps({
   },
 });
 
-const formatValueOnFocus = (payload: FocusEvent): void => {
-  const target = payload.target as HTMLInputElement;
-  target.value = props.value;
+const boxHovered = ref(false);
+const valueHovered = ref(false);
+const redefineValue = ref(props.value || "");
+
+watch(
+  () => props.value,
+  (value) => {
+    redefineValue.value = value;
+  }
+);
+
+const formatValueOnFocus = (): void => {
+  redefineValue.value = props.value;
 };
 
 const formatValueOnBlur = (payload: FocusEvent): void => {
@@ -128,6 +120,6 @@ const formatValueOnBlur = (payload: FocusEvent): void => {
     ? formattedValue(value, 2)
     : formattedValue(value, 1);
 
-  target.value = String(newVal);
+  redefineValue.value = String(newVal);
 };
 </script>
