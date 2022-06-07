@@ -14,7 +14,8 @@
         name="text"
         placeholder="Enter text"
         :value="props.text"
-        @input="$emit('update:text', $event.target.value)"
+        @blur="checkEmptyField"
+        @input="emit('update:text', $event.target.value)"
         class="uppercase flex-1 focus:outline-none focus:border-0"
       />
       <!-- Input value with tooltip -->
@@ -27,7 +28,7 @@
           @blur="formatValueOnBlur"
           @mouseenter="valueHovered = true"
           @mouseleave="valueHovered = false"
-          @input="$emit('update:value', $event.target.value)"
+          @input="emit('update:value', $event.target.value)"
           class="px-2 bg-gray-100 w-12 rounded-full text-center"
         />
         <div
@@ -65,7 +66,7 @@ import TrashIcon from "./icons/TrashIcon.vue";
 import WarningIcon from "./icons/WarningIcon.vue";
 import { formattedValue } from "../utils/parseFormat";
 
-defineEmits(["update:text", "update:value"]);
+const emit = defineEmits(["update:text", "update:value", "dispatch:error"]);
 
 const props = defineProps({
   text: {
@@ -109,6 +110,12 @@ const formatValueOnFocus = (): void => {
   redefineValue.value = props.value;
 };
 
+const checkEmptyField = (): void => {
+  if (!props.disabled && (props.value === "" || props.text === "")) {
+    emit("dispatch:error", "Fields should not be empty");
+  }
+};
+
 const formatValueOnBlur = (payload: FocusEvent): void => {
   const target = payload.target as HTMLInputElement;
   let value = target.value;
@@ -122,5 +129,7 @@ const formatValueOnBlur = (payload: FocusEvent): void => {
     : formattedValue(value, 1);
 
   redefineValue.value = String(newVal);
+
+  checkEmptyField();
 };
 </script>

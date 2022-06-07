@@ -10,6 +10,7 @@
             v-model:text="item.text"
             v-model:value="item.value"
             :error="item.error"
+            v-on:dispatch:error="(e) => (item.error = e)"
             :disabled="item.disabled"
             v-for="(item, index) in items"
             :key="index"
@@ -19,7 +20,7 @@
           <ButtonBase
             class="bg-white text-gray-500 w-full disabled:text-gray-300"
             @click="handleNewField"
-            :disabled="!!isMissingReq"
+            :disabled="isMissingReq"
           >
             <template #icon
               ><PlusIcon class="w-4 h-4 font-semibold"
@@ -34,7 +35,7 @@
           to 100</small
         >
         <ButtonBase
-          :disabled="isOverrallSummed !== 100"
+          :disabled="isOverrallSummed !== 100 && isMissingReq"
           class="bg-gray-500 disabled:bg-gray-400 disabled:text-gray-300 text-gray-100 w-48"
           >Apply</ButtonBase
         >
