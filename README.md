@@ -45,3 +45,9 @@ npm run dev
 ```sh
 npm run build
 ```
+
+### Run Testing (*check package.json scripts for other option*)
+
+```sh
+npm run test:unit:ci
+```
