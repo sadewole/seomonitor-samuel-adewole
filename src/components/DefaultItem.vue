@@ -1,9 +1,9 @@
 <template>
-  <div class="text-xs p-3 px-7 flex items-center gap-2">
-    <span class="uppercase flex-1 focus:outline-none focus:border-0">{{
+  <div class="text-xs p-3 px-7 flex items-center gap-2" data-testid="defaultItem">
+    <span class="uppercase flex-1 focus:outline-none focus:border-0" data-testid="textItem">{{
       text
     }}</span>
-    <p class="px-2 bg-white w-12 rounded-full text-center">{{ value }}</p>
+    <p class="px-2 bg-white w-12 rounded-full text-center" data-testid="valueItem">{{ value }}</p>
     <span>%</span>
   </div>
 </template>

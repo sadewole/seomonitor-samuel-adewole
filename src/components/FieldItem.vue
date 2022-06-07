@@ -1,11 +1,12 @@
 <template>
-  <div class="mb-2">
+  <div class="mb-2" data-testid="fieldContainer">
     <div
       :class="[
         'text-xs rounded-lg bg-white p-2 px-4 flex items-center gap-2 h-12',
         { 'border border-red-500': !!error },
         { 'pointer-events-none bg-gray-50': disabled },
       ]"
+      data-testid="boxContent"
       @mouseenter="boxHovered = true"
       @mouseleave="boxHovered = false"
     >
@@ -17,6 +18,7 @@
         @blur="checkEmptyField"
         @input="emit('update:text', $event.target.value)"
         class="uppercase flex-1 focus:outline-none focus:border-0"
+        data-testid="inputText"
       />
       <!-- Input value with tooltip -->
       <div class="relative">
@@ -30,6 +32,7 @@
           @mouseleave="valueHovered = false"
           @input="emit('update:value', $event.target.value)"
           class="px-2 bg-gray-100 w-12 rounded-full text-center"
+          data-testid="inputValue"
         />
         <div
           v-if="value"
@@ -37,6 +40,7 @@
             'inline-block absolute right-0 top-5 z-10 text-xs px-3 font-medium text-gray-500 bg-white rounded-lg border border-gray-200 shadow-sm',
             { 'opacity-0 invisible': !valueHovered },
           ]"
+          data-testid="tooltip"
         >
           {{ value }}
         </div>
@@ -46,12 +50,13 @@
         class="rounded-full bg-red-50 p-2 cursor-pointer"
         v-if="boxHovered && showIcon"
         @click="handleDelete"
+        data-testid="deleteIcon"
       >
         <TrashIcon class="w-3 h-3 text-red-500" />
       </span>
     </div>
     <!-- warning message -->
-    <span class="text-red-500 text-sm" v-if="!!error"
+    <span data-testid="errorMessage" class="text-red-500 text-sm" v-if="!!error"
       ><WarningIcon class="w-3 h-3 inline-flex items-center mr-1" />{{
         error
       }}</span
